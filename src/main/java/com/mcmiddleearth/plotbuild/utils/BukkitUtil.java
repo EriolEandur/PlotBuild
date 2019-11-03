@@ -60,7 +60,6 @@ public class BukkitUtil {
             return null;
         }
     }
-    
     public static boolean isSameBlock(Location loc1, Location loc2) {
         return loc1.getBlockX()==loc2.getBlockX() 
             && loc1.getBlockY()==loc2.getBlockY() 

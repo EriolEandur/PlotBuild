@@ -75,8 +75,7 @@ public class PlotAssign extends InsidePlotCommand {
         }
         if(plot.isUsingRestoreData()) {
             try {
-                //1.13 remove: PluginData.savePlotRestoreData(plot);
-                plot.save();
+                PluginData.savePlotRestoreData(plot);
             } catch (IOException ex) {
                 sendRestoreDataErrorMessage(cs, plot);
                 return;

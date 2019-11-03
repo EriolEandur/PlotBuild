@@ -1,7 +1,6 @@
 name: ${project.artifactId}
 main: com.mcmiddleearth.plotbuild.PlotBuildPlugin
 version: ${project.version}
-api-version: 1.13
 description: PlotBuild plugin
 commands:
     plot:

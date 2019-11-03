@@ -19,7 +19,6 @@
 package com.mcmiddleearth.plotbuild.constants;
 
 import lombok.Getter;
-import org.bukkit.Material;
 
 /**
  *
@@ -27,21 +26,17 @@ import org.bukkit.Material;
  */
 public enum PlotState {
     
-    UNCLAIMED (0, Material.WHITE_WOOL),
-    CLAIMED   (10, Material.PURPLE_WOOL),
-    FINISHED  (11, Material.BLUE_WOOL),
-    REFUSED   (4, Material.YELLOW_WOOL),
-    REMOVED  (13, Material.BROWN_WOOL);
+    UNCLAIMED (0),
+    CLAIMED   (10),
+    FINISHED  (11),
+    REFUSED   (4),
+    REMOVED  (13);
     
     @Getter
     private final int state;
     
-    @Getter
-    private final Material border;
-    
-    PlotState(int state, Material border){
+    PlotState(int state){
         this.state = state;
-        this.border = border;
     }
     
     public String getStateMessage() {
