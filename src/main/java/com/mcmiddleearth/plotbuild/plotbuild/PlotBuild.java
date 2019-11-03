@@ -85,7 +85,7 @@ public class PlotBuild {
     public int countUnclaimedPlots() {
         int result = 0;
         for(Plot p : plots) {
-            if(p.getState() == PlotState.UNCLAIMED) {
+            if(p!=null && p.getState() == PlotState.UNCLAIMED) {
                 result++;
             }
         }
@@ -95,7 +95,7 @@ public class PlotBuild {
     public int countUnfinishedPlots() {
         int result = 0;
         for(Plot p : plots) {
-            if(p.getState() != PlotState.REMOVED) {
+            if(p!=null && p.getState() != PlotState.REMOVED) {
                 result++;
             }
         }
@@ -104,7 +104,7 @@ public class PlotBuild {
     
     public boolean hasUnfinishedPlot(OfflinePlayer player) {
         for(Plot plot : plots) {
-            if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.isOwner(player)) {
+            if(plot!=null && (plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.isOwner(player)) {
                 return true;
             }
         }
@@ -113,7 +113,8 @@ public class PlotBuild {
     
     public Plot getPlot(OfflinePlayer player) {
         for(Plot plot : plots) {
-            if((plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.isOwner(player)) {
+            if((plot!=null 
+                    && (plot.getState()==PlotState.CLAIMED || plot.getState()==PlotState.REFUSED) && plot.isOwner(player))) {
                 return plot;
             }
         }
@@ -189,7 +190,7 @@ public class PlotBuild {
     public Set<UUID> getBuilders() {
         Set<UUID> builders = new HashSet<>();
         for(Plot plot : getPlots()) {
-            if(plot.getState()!=PlotState.REMOVED) {
+            if(plot!=null && plot.getState()!=PlotState.REMOVED) {
                 List<UUID> owners = plot.getOfflineOwners();
                 builders.addAll(owners);
             }

@@ -118,6 +118,7 @@ public class PlotList extends PlotBuildCommand {
     private void showPlotList(CommandSender cs, PlotBuild plotbuild, int page) {
         List<String> plotList = new ArrayList<>();
         for(Plot plot : plotbuild.getPlots()) {
+            if(plot==null) continue;
             plotList.add("{\"text\":\""+ChatColor.AQUA+MessageUtil.getNOPREFIX()
                                  +"Plot #"+plot.getID()+" "
                                  +MessageUtil.chatColorForPlotState(plot.getState())

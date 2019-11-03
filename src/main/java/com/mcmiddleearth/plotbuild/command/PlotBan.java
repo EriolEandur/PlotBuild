@@ -74,7 +74,7 @@ public class PlotBan extends PlotBuildCommand {
         }
         boolean signsPlaced = true;
         for(Plot plot : plotbuild.getPlots()) {
-            if(plot.getState()!=PlotState.REMOVED && plot.isOwner(banned)) {
+            if(plot!=null && plot.getState()!=PlotState.REMOVED && plot.isOwner(banned)) {
                 if(plot.countOwners()==1) {
                     try {
                         signsPlaced = plot.unclaim();

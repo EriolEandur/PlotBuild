@@ -97,8 +97,8 @@ public class PluginData {
     
     private static final Map <UUID, List<String>> offlineMessages = new LinkedHashMap<>();
     
-    @Getter
-    private static final Set <String> missingWorlds = new HashSet<>();
+//    @Getter
+//    private static final Set <String> missingWorlds = new HashSet<>();
     
     @Getter
     private static boolean loaded = false;
@@ -158,7 +158,7 @@ public class PluginData {
         List<Plot> plots = new ArrayList<>();
         for(PlotBuild plotbuild : PluginData.getPlotbuildsList()) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.getState()!=PlotState.REMOVED && plot.isOwner(player)) {
+                if(plot!=null && plot.getState()!=PlotState.REMOVED && plot.isOwner(player)) {
                     plots.add(plot);
                 }
             }
@@ -177,7 +177,7 @@ public class PluginData {
     public static Plot getPlotAt(Location location) {
         for(PlotBuild plotbuild : plotbuildsList) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.isInside(location) && plot.getState()!=PlotState.REMOVED) {
+                if(plot!=null && plot.isInside(location) && plot.getState()!=PlotState.REMOVED) {
                     return plot;
                 }
             }
@@ -188,7 +188,7 @@ public class PluginData {
     public static boolean isNearOwnPlot(Player player) {
         for(PlotBuild plotbuild : plotbuildsList) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.getState()!=PlotState.REMOVED
+                if(plot!=null && plot.getState()!=PlotState.REMOVED
                         && plot.isOwner(player) 
                         && plot.isNear(player.getLocation())) {
                     return true;
@@ -201,7 +201,7 @@ public class PluginData {
     public static Plot getIntersectingPlot(Selection selection, boolean cuboid) {
         for(PlotBuild plotbuild : plotbuildsList) {
             for(Plot plot : plotbuild.getPlots()) {
-                if(plot.getState()!=PlotState.REMOVED && plot.isIntersecting(selection,cuboid)) {
+                if(plot!=null && plot.getState()!=PlotState.REMOVED && plot.isIntersecting(selection,cuboid)) {
                     return plot;
                 }
             }
@@ -224,7 +224,7 @@ public class PluginData {
         selection.setSecondPoint(centerPlot.getCorner2().getBlock().getRelative(2, 2, 2).getLocation());
         for(PlotBuild plotbuild:plotbuildsList) {
             for(Plot plot:plotbuild.getPlots()) {
-                if(plot.isIntersecting(selection, centerPlot.getPlotbuild().isCuboid())) {
+                if(plot!=null && plot.isIntersecting(selection, centerPlot.getPlotbuild().isCuboid())) {
                     plot.placeSigns();
                 }
             }
@@ -303,16 +303,16 @@ public class PluginData {
                 Logger.getLogger(PluginData.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if(!missingWorlds.isEmpty()) {
+        /*if(!missingWorlds.isEmpty()) {
             plotbuildsList.clear();
             PlotBuildPlugin.getPluginInstance().getLogger().info("Waiting for worlds to load:");
             for(String world : missingWorlds) {
                 PlotBuildPlugin.getPluginInstance().getLogger().info(world);
             }
-        } else {
+        } else {*/
             loaded = true;
             PlotBuildPlugin.getPluginInstance().getLogger().info("All plotbuilds loaded.");
-        }
+        //}
         try {
             loadOfflineMessages();
         } catch (FileNotFoundException ex) {
@@ -418,7 +418,8 @@ public class PluginData {
             }
             writer.close();
             for(int i = 0; i < plotbuild.getPlots().size(); ++i) {
-                savePlot(plotbuild.getPlots().get(i), plotDir, i);
+                Plot plot = plotbuild.getPlots().get(i);
+                if(plot!=null) savePlot(plot, plotDir, i);
             }
         } else {
             throw new IOException();
@@ -549,7 +550,7 @@ public class PluginData {
         List <Plot> plots = loadPlots(plotDir);
         PlotBuild plotbuild = new PlotBuild(name, borderType, borderHeight, priv, cuboid);
         for(Plot p : plots) {
-            p.setPlotbuild(plotbuild);
+            if(p!=null) p.setPlotbuild(plotbuild);
         }
         plotbuild.setLocked(locked);
         plotbuild.setStaffList(staffList);
@@ -569,7 +570,14 @@ public class PluginData {
             
         };
         File[] files = plotDir.listFiles(pFilter);
-        ArrayList <Plot> plots = new ArrayList<>(Collections.nCopies(files.length, (Plot) null));
+        int max = 0;
+        for(File f : files) {
+            String name = f.getName();
+            name = name.substring(0, name.length()-2);
+            int i = Integer.parseInt(name);
+            if(i>max) max = i;
+        }
+        ArrayList <Plot> plots = new ArrayList<>(Collections.nCopies(max+1, (Plot) null));
         for(File f : files) {
             String name = f.getName();
             name = name.substring(0, name.length()-2);
@@ -585,13 +593,15 @@ public class PluginData {
         String worldName1 = scanner.nextLine();
         World world1 = Bukkit.getWorld(worldName1);
         if(world1 == null) {
-            missingWorlds.add(worldName1);
+            //missingWorlds.add(worldName1);
+            return null;
         }
         List <Integer> coords1 = ListUtil.integersFromString(scanner.nextLine(), ' ');
         String worldName2 = scanner.nextLine();
         World world2 = Bukkit.getWorld(worldName2);
         if(world2 == null) {
-            missingWorlds.add(worldName2);
+            //missingWorlds.add(worldName2);
+            return null;
         }
         List <Integer> coords2 = ListUtil.integersFromString(scanner.nextLine(), ' ');
         Location corner1 = new Location(world1, coords1.get(0), coords1.get(1), coords1.get(2));
@@ -603,7 +613,8 @@ public class PluginData {
             String worldName = scanner.nextLine();
             World world = Bukkit.getWorld(worldName);
             if(world == null) {
-                missingWorlds.add(worldName);
+                //missingWorlds.add(worldName);
+                return null;
             }
             List <Integer> coords = ListUtil.integersFromString(scanner.nextLine(), ' ');
             Location location = new Location(world, coords.get(0), coords.get(1), coords.get(2));

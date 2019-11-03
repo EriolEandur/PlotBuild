@@ -32,10 +32,10 @@ public class WorldListener implements Listener {
     @EventHandler
     public void onWorldLoad(WorldLoadEvent event) {
         if(PluginData.isLoaded()) return;
-        PluginData.getMissingWorlds().remove(event.getWorld().getName());
+        /*PluginData.getMissingWorlds().remove(event.getWorld().getName());
         if(PluginData.getMissingWorlds().isEmpty()) {
             PluginData.loadData();
-        }
+        }*/
     }
     
 }

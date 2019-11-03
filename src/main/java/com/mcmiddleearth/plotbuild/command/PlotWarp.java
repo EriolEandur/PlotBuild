@@ -50,7 +50,8 @@ public class PlotWarp extends PlotBuildCommand {
         }
         int plotID = 1;
         while(plotID < plotbuild.getPlots().size() 
-                && plotbuild.getPlots().get(plotID-1).getState().equals(PlotState.REMOVED)) {
+                && (plotbuild.getPlots().get(plotID-1)==null 
+                     || plotbuild.getPlots().get(plotID-1).getState().equals(PlotState.REMOVED))) {
             plotID++;
         }
         Plot ownPlot = plotbuild.getPlot((Player) cs);
@@ -71,21 +72,25 @@ public class PlotWarp extends PlotBuildCommand {
             }
         }
         Plot plot = plotbuild.getPlots().get(plotID-1); 
-        Location loc;
-        if(plot.getBorder().size()>0) {
-            loc = plot.getBorder().get(0).getBlock().getRelative(0, 1, -2).getLocation();
-        }
-        else {
-            loc = plot.getCorner1().getBlock().getRelative(0,1,0).getLocation();
-        }
-        if(plot.getPlotbuild().isCuboid()) {
-            if(teleportToPlotCenter(plot, (Player) cs)){// || teleportToPlotPlace(plot, (Player) cs)) {
-                return;
+        if(plot!=null) {
+            Location loc;
+            if(plot.getBorder().size()>0) {
+                loc = plot.getBorder().get(0).getBlock().getRelative(0, 1, -2).getLocation();
+            }
+            else {
+                loc = plot.getCorner1().getBlock().getRelative(0,1,0).getLocation();
+            }
+            if(plot.getPlotbuild().isCuboid()) {
+                if(teleportToPlotCenter(plot, (Player) cs)){// || teleportToPlotPlace(plot, (Player) cs)) {
+                    return;
+                }
+            } else {
+                if(teleportToRandomPlace(loc, (Player) cs)){// || teleportToPlotPlace(plot, (Player) cs)) {
+                    return;
+                }
             }
         } else {
-            if(teleportToRandomPlace(loc, (Player) cs)){// || teleportToPlotPlace(plot, (Player) cs)) {
-                return;
-            }
+            sendNoValidNumberErrorMessage(cs);
         }
         sendNoSavePlaceErrorMessage(cs);
     }

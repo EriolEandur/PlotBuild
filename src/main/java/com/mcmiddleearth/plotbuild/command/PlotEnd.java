@@ -64,7 +64,7 @@ public class PlotEnd extends PlotBuildCommand {
     
     public static void endPlotBuild(final Player cs, final PlotBuild plotbuild, boolean keep) {
         for(Plot p : plotbuild.getPlots()) {
-            if(p.getState() != PlotState.REMOVED) {
+            if(p!=null && p.getState() != PlotState.REMOVED) {
                 try {
                     for(UUID builder: p.getOfflineOwners()) {
                         if(!builder.equals(((Player)cs).getUniqueId())) {
